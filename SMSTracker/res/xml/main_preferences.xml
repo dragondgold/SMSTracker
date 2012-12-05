@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:picker="http://schemas.android.com/apk/res/com.smstracker.andres">
+    <PreferenceCategory android:title="General" >
+
+       	<EditTextPreference
+            android:defaultValue="0"
+            android:title="@string/SentSMSTitle"
+            android:key="sentSMS"
+            android:summary="@string/SentSMSSummary" 
+            android:inputType="number" />
+  	
+       	<EditTextPreference
+            android:defaultValue="0"
+            android:title="@string/ReceivedSMSTitle"
+            android:key="receivedSMS"
+            android:summary="@string/ReceivedSMSSummary" 
+            android:inputType="number" />
+ 
+        <EditTextPreference
+            android:defaultValue="0"
+            android:title="@string/SMSSentLimitTitle"
+            android:key="SMSSentLimit"
+            android:summary="@string/SMSSentLimitSummary" 
+            android:inputType="number" />
+        
+        <EditTextPreference
+            android:defaultValue="0"
+            android:title="@string/HistoryLengthTitle"
+            android:key="HistoryLength"
+            android:summary="@string/HistoryLengthSummary" 
+            android:inputType="number" />
+ 
+        <Preference
+            android:key="NumberPickerDay"
+        	android:title="@string/NumberPickerTitle"
+            android:summary="@string/NumberPickerSummary" />    
+            
+        <!--
+        <com.michaelnovakjr.numberpicker.NumberPickerPreference
+            android:key="NumberPickerLimit"
+            android:title="@string/NumberPickerTitle"
+            android:summary="@string/NumberPickerSummary"
+            picker:defaultValue="1"
+            picker:startRange="1"
+            picker:endRange="31" /> -->
+    </PreferenceCategory>
+</PreferenceScreen>

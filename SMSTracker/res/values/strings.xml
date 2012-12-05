@@ -1,0 +1,32 @@
+<resources>
+
+    <string name="app_name">SMSTracker</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+    
+    <string name="SentSMS">Mensajes Enviados: </string>
+	<string name="ReceivedSMS">Mensajes Recibidos: </string>
+    
+    <string name="SentSMSTitle">Mensajes Enviados</string>
+	<string name="ReceivedSMSTitle">Mensajes Recibidos</string>
+	
+	<string name="SentSMSSummary">Mensajes Enviados</string>
+	<string name="ReceivedSMSSummary">Mensajes Recibidos</string>
+	
+	<string name="SentSMSNotification">Enviados: </string>
+	<string name="ReceivedSMSNotification">Recibidos: </string>
+	
+	<string name="SMSSentLimitTitle">Limite de mensajes enviados</string>
+	<string name="SMSSentLimitSummary">Maxima cantidad de mensajes para enviar</string>
+	
+	<string name="SMSSentLimitExceed">Limite de mensajes sobrepasado</string>
+	
+	<string name="NumberPickerTitle">Fecha de reinicio</string>
+	<string name="NumberPickerSummary">Fecha de reinicio del contador de mensajes</string>
+	
+	<string name="HistoryLengthTitle">Antiguedad del historial</string>
+	<string name="HistoryLengthSummary">Cantidad de meses que se guarda el historial</string>
+	
+	<string name="ResetButton">Reiniciar</string>
+
+</resources>
