@@ -2,6 +2,6 @@ Un sencillo contador de mensajes para Android. La diferencia principal con los c
 Las operadoras de telefonía celular al menos en mi país (Argentina) el mensaje se cobra de acuerdo a la cantidad de páginas (1 página = 160 caracteres) y las aplicaciones disponibles solo cuentan un mensaje cualquiera sea su longitud, es por eso que he creado esta aplicación.
 Es muy sencila y liviana pero cumple su cometido alertandonos inclusive cuando nos excedemos del límite que establecemos.
 
-it is a very simple SMS counter for Android. The main diference with SMS counters in the Play Store (or Market) is that this application take into account the number of pages of the SMS you are sending.
+It is a very simple SMS counter for Android. The main diference with SMS counters in the Play Store (or Market) is that this application take into account the number of pages of the SMS you are sending.
 Telephony companies (at least in my country, Argentina) charge you according to the number of pages of the SMS (1 page = 160 characters) and the availeable applications only count one SMS no mather what lenght it is, that's why I created this application.
 It is very simple and light but it works great and even warn us when we have reached the SMS limit that we previously set.
