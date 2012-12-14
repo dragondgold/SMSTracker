@@ -39,6 +39,7 @@ public class MainActivity extends SherlockActivity {
         sentSMS = (TextView) findViewById(R.id.tvSent);
         receivedSMS = (TextView) findViewById(R.id.tvReceived);
         
+        // TODO: historial de meses
         resetButton = (Button) findViewById(R.id.bReset);
         history = (TextView) findViewById(R.id.tvHistory);
         
@@ -53,26 +54,6 @@ public class MainActivity extends SherlockActivity {
         
         // Preferencias
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        
-        // Calculo cuantos años diferentes tengo (si son más de 12 meses)
-        final int years = (int) Math.ceil( (double)Integer.decode(mPrefs.getString("HistoryLength", "0")) / 12d );
-        Calendar calendar = Calendar.getInstance();
-        
-        // Voy pasando por los años en caso de que halla más de 12 meses
-    	for(int y = 0; y < years; ++y){
-    		// Voy pasando por los meses empezando por el actual-1 hasta los que diga el usuario
-	        for(int months = Integer.decode(mPrefs.getString("HistoryLength", "0")), n = 1; n <= months ; ++n){
-	    		if( mPrefs.contains( "sentSMS" + (calendar.get(Calendar.YEAR)-y) + (calendar.get(Calendar.MONTH)-n) ) ){
-	    			
-	    			// Escribo en el TextView la cantidad de mensajes correspondiente al mes y año
-	    			// El mes en el calendario es +1 porque por ejemplo en Calendar enero = 0
-	    			history.append("" + (calendar.get(Calendar.MONTH)+1) + "/" + (calendar.get(Calendar.YEAR)-y)
-	    					+ "   " + getString(R.string.SentSMS) + ": " + mPrefs.getString( "sentSMS" + (calendar.get(Calendar.YEAR)-y) + (calendar.get(Calendar.MONTH)-n), "0")
-	    					+ "   " + getString(R.string.ReceivedSMS) + ": " + mPrefs.getString( "receivedSMS" + (calendar.get(Calendar.YEAR)-y) + (calendar.get(Calendar.MONTH)-n), "0")
-	    					+ "\n");
-	    		}
-	        }
-    	}
 
     }
 

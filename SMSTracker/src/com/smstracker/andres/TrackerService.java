@@ -45,7 +45,6 @@ public class TrackerService extends Service{
 	private static SharedPreferences mPrefs;
 	private static String sentSMS, receivedSMS;
 	private static Calendar calendar;
-	private static Calendar curTime;
 	private static PendingIntent alarmPendingIntent;
 	private static AlarmManager mAlarmManager;
 	
@@ -55,26 +54,13 @@ public class TrackerService extends Service{
 		
 		// Inicializaciones
 		calendar = Calendar.getInstance();
-		curTime = Calendar.getInstance();
 		isRunning = true;
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		sent = Long.decode( mPrefs.getString("sentSMS" + curTime.get(Calendar.YEAR) + curTime.get(Calendar.MONTH), "0") );
-		received = Long.decode( mPrefs.getString("receivedSMS" + curTime.get(Calendar.YEAR) + curTime.get(Calendar.MONTH), "0") );
+		sent = Long.decode( mPrefs.getString("sentSMS", "0") );
+		received = Long.decode( mPrefs.getString("receivedSMS", "0") );
 		lastID = "";
 		sentSMS = getString(R.string.SentSMSNotification);
-		receivedSMS = getString(R.string.ReceivedSMSNotification);
-		
-		// Si se viene de una versión anterior que no toma en cuenta la fecha, esto edita automáticamente la base de datos de SharedPreferences
-		if(mPrefs.contains("sentSMS")){
-			String temp = mPrefs.getString("sentSMS", "0");
-			mPrefs.edit().remove("sentSMS").apply();
-			mPrefs.edit().putString("sentSMS" + curTime.get(Calendar.YEAR) + curTime.get(Calendar.MONTH), temp);
-		}
-		if(mPrefs.contains("receivedSMS")){
-			String temp = mPrefs.getString("receivedSMS", "0");
-			mPrefs.edit().remove("receivedSMS").apply();
-			mPrefs.edit().putString("receivedSMS" + curTime.get(Calendar.YEAR) + curTime.get(Calendar.MONTH), temp);
-		}		
+		receivedSMS = getString(R.string.ReceivedSMSNotification);	
 		
 		// ContentResolver para obtener los SMS salientes
 		contentResolver = this.getContentResolver();
@@ -101,7 +87,7 @@ public class TrackerService extends Service{
 		// Muestra la notificación
 		mNotificationManager.notify(Notification_ID, notificationBuilder.getNotification());
 		
-		// En caso de que nunca se halla creado la preferencia del mes donde se debe reincir (primera instalación de la app) verifico:
+		// En caso de que nunca se halla creado la preferencia del mes donde se debe reiniciar (primera instalación de la app) verifico:
 		// Si aún no llego el dia del reinicio permanezco en el mismo mes
 		// Sino ya pasé el dia del reinicio voy al mes siguiente
 		if(!mPrefs.contains("resetMonth")){
@@ -115,11 +101,18 @@ public class TrackerService extends Service{
 		}
 		
 		// Creo un calendario, seteo el dia de reinicio a las 00:00:00 PM  para que cuando sea el dia del reinicio salte la alarma
-		calendar.set(Calendar.MONTH, mPrefs.getInt("resetMonth", calendar.get(Calendar.MONTH)));		// Mes
-		calendar.set(Calendar.DAY_OF_MONTH, mPrefs.getInt("NumberPickerDay", 1));						// Dia
+		calendar.set(Calendar.MONTH, mPrefs.getInt("resetMonth", calendar.get(Calendar.MONTH)));	// Mes
+		calendar.set(Calendar.DAY_OF_MONTH, mPrefs.getInt("NumberPickerDay", 1));					// Dia
 		calendar.set(Calendar.HOUR_OF_DAY, 0);			// Hora
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
+		
+		Log.i("SMSCalendar", "Mes: " + calendar.get(Calendar.MONTH));
+		Log.i("SMSCalendar", "Dia: " + calendar.get(Calendar.DAY_OF_MONTH));
+		Log.i("SMSCalendar", "Año: " + calendar.get(Calendar.YEAR));
+		Log.i("SMSCalendar", "Hora: " + calendar.get(Calendar.HOUR));
+		Log.i("SMSCalendar", "Minuto: " + calendar.get(Calendar.MINUTE));
+		Log.i("SMSCalendar", "Segundo: " + calendar.get(Calendar.SECOND));
 		
 		// Creo un Intent con la clase que se va a llamar al dispararse la alarma
 		Intent alarmIntent = new Intent(this, AlarmReceiver.class);
@@ -142,27 +135,33 @@ public class TrackerService extends Service{
 		mPrefs.edit().putInt("NumberPickerDay", newDay).apply();
 		
 		Log.i("SMSStatus", "Day Changed -- newDay: " + newDay);
-		Calendar cal = Calendar.getInstance();
-		
+		Calendar now = Calendar.getInstance();
+
 		// Si aún no llego el dia del reinicio permanezco en el mismo mes
-		// Pero si me pase del dia de reinicio que habia antes voy al mes siguiente
-		if(cal.get(Calendar.DAY_OF_MONTH) < newDay){
+		// Compruebo el año tmb porq al estar en el mes de diciembre si la app se instala por primera vez
+		// la fecha de reinicio correspondera al 1 de enero (default) del 2013 por ejemplo
+		// siendo que estamos en diciembre del 2012
+		if((now.get(Calendar.DAY_OF_MONTH) < newDay) || (now.get(Calendar.YEAR) < calendar.get(Calendar.YEAR)) ){
 			calendar.set(Calendar.DAY_OF_MONTH, newDay);
-			calendar.set(Calendar.MONTH, cal.get(Calendar.MONTH));
 			mAlarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmPendingIntent);
 		}
+		// Pero si me pase del dia de reinicio que habia antes voy al mes siguiente
 		else{
 			calendar.set(Calendar.DAY_OF_MONTH, newDay);
-			calendar.set(Calendar.MONTH, cal.get(Calendar.MONTH));		// Al mes actual le sumo 1 (siguiente mes)
+			// Al mes actual le sumo 1 (siguiente mes)
+			calendar.set(Calendar.MONTH, now.get(Calendar.MONTH));
 			calendar.add(Calendar.MONTH, 1);
 			mPrefs.edit().putInt("resetMonth", calendar.get(Calendar.MONTH)).apply();
 			mAlarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmPendingIntent);
+			Log.i("SMSStatus", "Siguiente mes");
 		}
 		
-		Log.i("SMSStatus", "Month: " + calendar.get(Calendar.MONTH));
-		Log.i("SMSStatus", "Day: " + calendar.get(Calendar.DAY_OF_MONTH));
-		Log.i("SMSStatus", "Hour: " + calendar.get(Calendar.HOUR));
-		Log.i("SMSStatus", "Minute: " + calendar.get(Calendar.MINUTE));
+		Log.i("SMSCalendar", "Mes: " + calendar.get(Calendar.MONTH));
+		Log.i("SMSCalendar", "Dia: " + calendar.get(Calendar.DAY_OF_MONTH));
+		Log.i("SMSCalendar", "Año: " + calendar.get(Calendar.YEAR));
+		Log.i("SMSCalendar", "Hora: " + calendar.get(Calendar.HOUR));
+		Log.i("SMSCalendar", "Minuto: " + calendar.get(Calendar.MINUTE));
+		Log.i("SMSCalendar", "Segundo: " + calendar.get(Calendar.SECOND));
 	}
 	
 	/**
@@ -170,10 +169,11 @@ public class TrackerService extends Service{
 	 * @param value es el valor de la preferencia (numero máximo de mensajes) que se cambió
 	 */
 	public static void updateSMSLimit (String value){
-		Log.i("SMSStatus", "UpdateSMSLimit");
+		Log.i("SMSStatus", "UpdateSMSLimit to " + value);
 		notificationBuilder.setContentText(sentSMS + " " + sent +
 					   "/" + value + " -- " + receivedSMS + " " + received);
 		mNotificationManager.notify(Notification_ID, notificationBuilder.getNotification());
+		//mPrefs.edit().
 	}
 	
 	/**
@@ -182,7 +182,7 @@ public class TrackerService extends Service{
 	 */
 	public static void updateSentSMS (String value){
 		Log.i("SMSStatus", "UpdateSentSMS");
-		mPrefs.edit().putString("sentSMS" + curTime.get(Calendar.YEAR) + curTime.get(Calendar.MONTH), value).apply();
+		mPrefs.edit().putString("sentSMS", value).apply();
 		sent = Long.decode(value);
 
 		notificationBuilder.setContentText(sentSMS + " " + sent +
@@ -196,7 +196,7 @@ public class TrackerService extends Service{
 	 */
 	public static void updateReceivedSMS (String value){
 		Log.i("SMSStatus", "UpdateReceivedSMS");
-		mPrefs.edit().putString("receivedSMS" + curTime.get(Calendar.YEAR) + curTime.get(Calendar.MONTH), value).apply();
+		mPrefs.edit().putString("receivedSMS", value).apply();
 		received = Long.decode(value);
 		
 		notificationBuilder.setContentText(sentSMS + " " + sent +
@@ -211,8 +211,8 @@ public class TrackerService extends Service{
 	public static void resetCounter (boolean manual){
 		Log.i("SMSStatus", "Counter Reset -- Month: " + calendar.get(Calendar.MONTH));
 		// Reinicio los contadores
-		mPrefs.edit().putString("sentSMS" + curTime.get(Calendar.YEAR) + curTime.get(Calendar.MONTH), "0").apply();
-		mPrefs.edit().putString("receivedSMS" + curTime.get(Calendar.YEAR) + curTime.get(Calendar.MONTH), "0").apply();
+		mPrefs.edit().putString("sentSMS", "0").apply();
+		mPrefs.edit().putString("receivedSMS", "0").apply();
 		sent = received = 0;
 		
 		if(!manual){
@@ -228,10 +228,12 @@ public class TrackerService extends Service{
 				   "/" + mPrefs.getString("SMSSentLimit", "0") + " -- " + receivedSMS + " " + received);
 		mNotificationManager.notify(Notification_ID, notificationBuilder.getNotification());
 		
-		Log.i("SMSStatus", "Month: " + calendar.get(Calendar.MONTH));
-		Log.i("SMSStatus", "Day: " + calendar.get(Calendar.DAY_OF_MONTH));
-		Log.i("SMSStatus", "Hour: " + calendar.get(Calendar.HOUR));
-		Log.i("SMSStatus", "Minute: " + calendar.get(Calendar.MINUTE));
+		Log.i("SMSCalendar", "Mes: " + calendar.get(Calendar.MONTH));
+		Log.i("SMSCalendar", "Dia: " + calendar.get(Calendar.DAY_OF_MONTH));
+		Log.i("SMSCalendar", "Año: " + calendar.get(Calendar.YEAR));
+		Log.i("SMSCalendar", "Hora: " + calendar.get(Calendar.HOUR));
+		Log.i("SMSCalendar", "Minuto: " + calendar.get(Calendar.MINUTE));
+		Log.i("SMSCalendar", "Segundo: " + calendar.get(Calendar.SECOND));
 	}
 	
 	/**
@@ -276,7 +278,7 @@ public class TrackerService extends Service{
 		        // Mensaje enviado
 		        if(protocol == null){
 		        	sent += Math.ceil((double)length / 160d);
-		        	mPrefs.edit().putString("sentSMS" + curTime.get(Calendar.YEAR) + curTime.get(Calendar.MONTH), ""+sent ).apply();
+		        	mPrefs.edit().putString("sentSMS", ""+sent ).apply();
 		        	
 		        	notificationBuilder.setContentText(sentSMS + " " + sent +
 							   "/" + mPrefs.getString("SMSSentLimit", "0") + " -- " + receivedSMS + " " + received);
@@ -290,7 +292,7 @@ public class TrackerService extends Service{
 		        // Mensaje recibido
 		        else{
 		        	received += Math.ceil((double)length / 160d);
-		            mPrefs.edit().putString("receivedSMS" + curTime.get(Calendar.YEAR) + curTime.get(Calendar.MONTH), ""+received).apply();
+		            mPrefs.edit().putString("receivedSMS", ""+received).apply();
 		            
 		        	notificationBuilder.setContentText(sentSMS + " " + sent +
 							   "/" + mPrefs.getString("SMSSentLimit", "0") + " -- " + receivedSMS + " " + received);
