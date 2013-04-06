@@ -58,13 +58,11 @@ public class MainPrefs extends PreferenceActivity{
 	            pickerDialog.setOnNumberSetListener(new OnNumberSetListener(){
 					@Override
 					public void onNumberSet(int selectedNumber) {
-						Log.i("Preference", "NumberPicker Changed");
+						Log.i("SMSTrackerPreferences", "NumberPicker Changed");
 						TrackerService.dayChanged(selectedNumber);
 					}
 	            });
 	            pickerDialog.show();
-				
-				Log.i("Preference", "NumberPicker Clicked");
 				return true;
 			}
 		});

@@ -9,7 +9,7 @@ public class AlarmReceiver extends BroadcastReceiver{
 	
 	@Override 
 	  public void onReceive(Context context, Intent intent) {
-		Log.i("SMSStatus", "AlarmReceiver");
+		Log.i("SMSTracker", "AlarmReceiver");
 		TrackerService.resetCounter(false);
 	  }    
 	

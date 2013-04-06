@@ -9,7 +9,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 	
     @Override
     public void onReceive(Context context, Intent intent) {
-    	Log.i("SMSStatus", "Started on boot");
+    	Log.i("SMSTracker", "Started on boot");
         Intent startServiceIntent = new Intent(context, TrackerService.class);
         context.startService(startServiceIntent);
     }

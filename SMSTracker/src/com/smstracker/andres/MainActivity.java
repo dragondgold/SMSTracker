@@ -2,7 +2,6 @@ package com.smstracker.andres;
 
 import java.util.Calendar;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -21,27 +20,20 @@ import android.widget.TextView;
 public class MainActivity extends SherlockActivity {
 
 	private static Intent serviceIntent;
-	private static TextView sentSMS, receivedSMS, history;
+	private static TextView sentSMS, receivedSMS;
 	private static Button resetButton;
 	private static SharedPreferences mPrefs;
 	private static Calendar calendar = Calendar.getInstance(); 
-	
-	/** ActionBar */
-	private static ActionBar actionBar;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        actionBar = getSupportActionBar();
-        
         sentSMS = (TextView) findViewById(R.id.tvSent);
         receivedSMS = (TextView) findViewById(R.id.tvReceived);
-        
-        // TODO: historial de meses
+
         resetButton = (Button) findViewById(R.id.bReset);
-        history = (TextView) findViewById(R.id.tvHistory);
         
         resetButton.setOnClickListener(new OnClickListener(){
 			@Override
