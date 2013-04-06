@@ -93,14 +93,17 @@ public class TrackerService extends Service{
 		if(!mPrefs.contains("resetMonth")){
 			if(calendar.get(Calendar.DAY_OF_MONTH) < mPrefs.getInt("NumberPickerDay", 1)){
 				mPrefs.edit().putInt("resetMonth", calendar.get(Calendar.MONTH)).apply();
+				mPrefs.edit().putInt("resetYear", calendar.get(Calendar.YEAR)).apply();
 			}
 			else{
 				calendar.add(Calendar.MONTH, 1);
 				mPrefs.edit().putInt("resetMonth", calendar.get(Calendar.MONTH)).apply();
+				mPrefs.edit().putInt("resetYear", calendar.get(Calendar.YEAR)).apply();
 			}
 		}
 		
 		// Creo un calendario, seteo el dia de reinicio a las 00:00:00 PM  para que cuando sea el dia del reinicio salte la alarma
+		calendar.set(Calendar.YEAR, mPrefs.getInt("resetYear", 0));									// Año
 		calendar.set(Calendar.MONTH, mPrefs.getInt("resetMonth", calendar.get(Calendar.MONTH)));	// Mes
 		calendar.set(Calendar.DAY_OF_MONTH, mPrefs.getInt("NumberPickerDay", 1));					// Dia
 		calendar.set(Calendar.HOUR_OF_DAY, 0);			// Hora
@@ -152,6 +155,7 @@ public class TrackerService extends Service{
 			calendar.set(Calendar.MONTH, now.get(Calendar.MONTH));
 			calendar.add(Calendar.MONTH, 1);
 			mPrefs.edit().putInt("resetMonth", calendar.get(Calendar.MONTH)).apply();
+			mPrefs.edit().putInt("resetYear", calendar.get(Calendar.YEAR)).apply();
 			mAlarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmPendingIntent);
 			Log.i("SMSStatus", "Siguiente mes");
 		}
@@ -221,6 +225,7 @@ public class TrackerService extends Service{
 			mAlarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmPendingIntent);
 			// Guardo el mes donde será el proximo reinicio
 			mPrefs.edit().putInt("resetMonth", calendar.get(Calendar.MONTH)).apply();
+			mPrefs.edit().putInt("resetYear", calendar.get(Calendar.YEAR)).apply();
 		}
 		
 		// Actualizo la notificación
