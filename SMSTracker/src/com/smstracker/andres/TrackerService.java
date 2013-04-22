@@ -1,9 +1,7 @@
 package com.smstracker.andres;
 
-import java.nio.charset.CharsetDecoder;
 import java.util.Calendar;
 
-import android.R.integer;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
