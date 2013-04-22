@@ -39,8 +39,8 @@ public class MainActivity extends SherlockActivity {
 			@Override
 			public void onClick(View v) {
 				TrackerService.resetCounter(true);
-				sentSMS.setText(getString(R.string.SentSMS) + mPrefs.getString("sentSMS" + calendar.get(Calendar.YEAR) + calendar.get(Calendar.MONTH), "0"));
-		        receivedSMS.setText(getString(R.string.ReceivedSMS) + mPrefs.getString("receivedSMS" + calendar.get(Calendar.YEAR) + calendar.get(Calendar.MONTH), "0"));
+				sentSMS.setText(getString(R.string.SentSMS) + mPrefs.getString("sentSMS", "0"));
+		        receivedSMS.setText(getString(R.string.ReceivedSMS) + mPrefs.getString("receivedSMS", "0"));
 			}
         });
         
@@ -84,8 +84,8 @@ public class MainActivity extends SherlockActivity {
 		}
 		
         // Muestro los contadores de mensajes
-        sentSMS.setText(getString(R.string.SentSMS) + mPrefs.getString("sentSMS" + calendar.get(Calendar.YEAR) + calendar.get(Calendar.MONTH), "0"));
-        receivedSMS.setText(getString(R.string.ReceivedSMS) + mPrefs.getString("receivedSMS" + calendar.get(Calendar.YEAR) + calendar.get(Calendar.MONTH), "0"));
+        sentSMS.setText(getString(R.string.SentSMS) + mPrefs.getString("sentSMS", "0"));
+        receivedSMS.setText(getString(R.string.ReceivedSMS) + mPrefs.getString("receivedSMS", "0"));
 		
 		super.onResume();
 	}
