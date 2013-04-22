@@ -115,7 +115,7 @@ public class TrackerService extends Service{
 		mCalendar.set(Calendar.MINUTE, 0);				// Minutos
 		mCalendar.set(Calendar.SECOND, 0);				// Segundos
 		
-		Log.i("SMSTrackerCalendar", "Mes: " + mCalendar.get(Calendar.MONTH));
+		Log.i("SMSTrackerCalendar", "Mes: " + (mCalendar.get(Calendar.MONTH)+1));
 		Log.i("SMSTrackerCalendar", "Dia: " + mCalendar.get(Calendar.DAY_OF_MONTH));
 		Log.i("SMSTrackerCalendar", "Año: " + mCalendar.get(Calendar.YEAR));
 		Log.i("SMSTrackerCalendar", "Hora: " + mCalendar.get(Calendar.HOUR));
@@ -167,7 +167,7 @@ public class TrackerService extends Service{
 			Log.i("SMSTrackerPreferences", "Siguiente mes");
 		}
 		
-		Log.i("SMSTrackerCalendar", "Mes: " + mCalendar.get(Calendar.MONTH));
+		Log.i("SMSTrackerCalendar", "Mes: " + (mCalendar.get(Calendar.MONTH)+1));
 		Log.i("SMSTrackerCalendar", "Dia: " + mCalendar.get(Calendar.DAY_OF_MONTH));
 		Log.i("SMSTrackerCalendar", "Año: " + mCalendar.get(Calendar.YEAR));
 		Log.i("SMSTrackerCalendar", "Hora: " + mCalendar.get(Calendar.HOUR));
@@ -242,7 +242,7 @@ public class TrackerService extends Service{
 				   "/" + mPrefs.getString("SMSSentLimit", "0") + " -- " + receivedSMS + " " + received);
 		mNotificationManager.notify(mNotificationID, notificationBuilder.getNotification());
 		
-		Log.i("SMSTrackerCalendar", "Mes: " + mCalendar.get(Calendar.MONTH));
+		Log.i("SMSTrackerCalendar", "Mes: " + (mCalendar.get(Calendar.MONTH)+1));
 		Log.i("SMSTrackerCalendar", "Dia: " + mCalendar.get(Calendar.DAY_OF_MONTH));
 		Log.i("SMSTrackerCalendar", "Año: " + mCalendar.get(Calendar.YEAR));
 		Log.i("SMSTrackerCalendar", "Hora: " + mCalendar.get(Calendar.HOUR));
