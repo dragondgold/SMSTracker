@@ -353,9 +353,9 @@ public class TrackerService extends Service{
 		final String mChars = new String(acceptedCharacters);
 		
 		for(int n = start; n < end; ++n){
-			if(!mChars.contains(""+mString.charAt(n))) return false;
+			if(!mChars.contains(""+mString.charAt(n))) return true;
 		}
-		return true;
+		return false;
 	}
 	
 	@Override
