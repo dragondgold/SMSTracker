@@ -1,7 +1,9 @@
 package com.smstracker.andres;
 
+import java.nio.charset.CharsetDecoder;
 import java.util.Calendar;
 
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
@@ -285,13 +287,13 @@ public class TrackerService extends Service{
 	        // mismo mensaje) ya que cada mensaje tiene un id único
 	        if( (type == 2 || type == 1) && (!lastID.contentEquals(cur.getString(cur.getColumnIndex("_id")))) ){
 		        String protocol = cur.getString(cur.getColumnIndex("protocol"));
-		        int length = cur.getString(cur.getColumnIndex("body")).length();
+		        String smsString = cur.getString(cur.getColumnIndex("body"));
 		        lastID = cur.getString(cur.getColumnIndex("_id"));
 		        
 		        // Mensaje enviado
 		        if(protocol == null){
-		        	// Divido por el número de caracteres por página
-		        	sent += Math.ceil((double)length / 160d);
+		        	// Sumo el numero de paginas
+		        	sent += numberOfSMSPages(smsString);
 		        	mPrefs.edit().putString("sentSMS", ""+sent ).apply();
 		        	
 		        	notificationBuilder.setContentText(sentSMS + " " + sent +
@@ -305,7 +307,8 @@ public class TrackerService extends Service{
 		        }
 		        // Mensaje recibido
 		        else{
-		        	received += Math.ceil((double)length / 160d);
+		        	// Sumo el numero de paginas
+		        	received += numberOfSMSPages(smsString);
 		            mPrefs.edit().putString("receivedSMS", ""+received).apply();
 		            
 		        	notificationBuilder.setContentText(sentSMS + " " + sent +
@@ -316,6 +319,43 @@ public class TrackerService extends Service{
 	        	mNotificationManager.notify(mNotificationID, notificationBuilder.getNotification());
 	        }
 	    }
+	}
+	
+	private static int numberOfSMSPages (final String mString){
+		final int stringLenght = mString.length();
+		if(hasForbiddenChars(mString, 0, mString.length())){
+			return (int)Math.ceil(stringLenght/2);
+		}
+		else{
+			return (int)Math.ceil(stringLenght/160);
+		}
+	}
+	
+	private static boolean hasForbiddenChars (final String mString, int start, int end){
+		final char[] acceptedCharacters = {'@','Δ',' ','0','¡','P','¿','p',
+				'£','_','!','1','A','Q','a','q',
+				'$','Φ','"','2','B','R','b','r',
+				',','¥','Γ','#','3','C','S','c',
+				's','è','Λ','¤','4','D','T','d',
+				't','é','Ω','%','5','E','U','e',
+				'u','ù','Π','&','6','F','V','f',
+				'v','ì','Ψ','\'','7','G','W','g',
+				'w','ò','Σ','(','8','H','X','h',
+				'x','Ç','Θ',')','9','I','Y','i',
+				'y','\n','Ξ','*',':','J','Z','j',
+				'z','Ø','\u010B','+',';','K','Ä',
+				'k','ä','ø','Æ',',','<','L','Ö','l',
+				'ö','\r','æ','-','=','M','Ñ','m',
+				'ñ','Å','ß','.','>','N','Ü','n','ü',
+				'å','É','/','?','O','§','o','à',
+				'|','Á','á','^','Ú','€','ú','{','}',
+				'ç','Í','í','[',']','~','\\','Ó','ó'};
+		final String mChars = new String(acceptedCharacters);
+		
+		for(int n = start; n < end; ++n){
+			if(!mChars.contains(""+mString.charAt(n))) return false;
+		}
+		return true;
 	}
 	
 	@Override
