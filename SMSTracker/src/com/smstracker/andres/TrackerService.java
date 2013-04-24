@@ -322,7 +322,7 @@ public class TrackerService extends Service{
 	private static int numberOfSMSPages (final String mString){
 		final int stringLenght = mString.length();
 		if(hasForbiddenChars(mString, 0, mString.length())){
-			return (int)Math.ceil(stringLenght/2);
+			return (int)Math.ceil(stringLenght/70);
 		}
 		else{
 			return (int)Math.ceil(stringLenght/160);
