@@ -321,10 +321,13 @@ public class TrackerService extends Service{
 	
 	private static int numberOfSMSPages (final String mString){
 		final int stringLenght = mString.length();
-		if(hasForbiddenChars(mString, 0, mString.length())){
+		
+		if(hasForbiddenChars(mString, 0, stringLenght)){
+			Log.i("SMSTracker", "Paginas de 70 caracteres. " + (int)Math.ceil(stringLenght/70d) + " paginas");
 			return (int)Math.ceil(stringLenght/70d);
 		}
 		else{
+			Log.i("SMSTracker", "Paginas de 160 caracteres. " + (int)Math.ceil(stringLenght/160d) + " paginas");
 			return (int)Math.ceil(stringLenght/160d);
 		}
 	}
